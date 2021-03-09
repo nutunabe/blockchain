@@ -1,51 +1,59 @@
+pragma solidity >=0.4.22 <0.6.0;
+
 contract Test
 {
+    enum RequestType { NewHome, EditHome }
+    mapping(address => Employee) private employees;
+    mapping(address => Owner) private owners;
+    mapping(address => Request) private requests;
+
     struct Owner
     {
         string name;
-        int pass_ser;
-        int pass_num;
-        string phone_number;
-        uint256 pass_date;
-    }   
+        int passSeries;
+        int passNumber;
+        uint256 passDate;
+        string phoneNumber;
+    }
     struct Home
     {
         string Address;
         fixed Area;
         int Cost;
-        Owner owner;
+        address owner;
     }
     struct Request
     {
-        int _type;
+        RequestType requestType;
         Home home;
         int result;
+        address adr;
     }
     struct Employee
     {
         string nameEmployee;
-        string position;
-        string phone_numberEmployee;
+        int position;
+        int phoneNumberEmployee;
     }
-    
+
     Home private home;
     Owner private owner;
     Request private request;
     Employee private employee;
-    
+
     string private message;
-    
-    function Test1(string memory Message) public 
+
+    function Test1(string memory Message) public
     {
         message = Message;
     }
-    
+
     function SetMessage(string memory newMessage) public
     {
         message = newMessage;
     }
-    
-    function GetMessage() public returns (string memory)
+
+    function GetMessage() public returns(string memory)
     {
         return message;
     }
