@@ -1,60 +1,63 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >= 0.4.22 < 0.6.0;
 
 contract Test
 {
     enum RequestType { NewHome, EditHome }
-    mapping(address => Employee) private employees;
-    mapping(address => Owner) private owners;
-    mapping(address => Request) private requests;
+
+    struct Ownership
+    {
+        string homeAddress;
+        address owner;
+        uint p;
+    }
 
     struct Owner
     {
         string name;
-        int passSeries;
-        int passNumber;
-        uint256 passDate;
+        uint passSer;
+        uint passNum;
+        string date; //TODO переделать
         string phoneNumber;
     }
+
     struct Home
     {
-        string Address;
-        fixed Area;
-        int Cost;
-        address owner;
+        string homeAddress;
+        uint area;
+        uint cost;
     }
+
     struct Request
     {
         RequestType requestType;
         Home home;
-        int result;
-        address adr;
+        uint result;
     }
+
     struct Employee
     {
-        string nameEmployee;
-        int position;
-        int phoneNumberEmployee;
+        string name;
+        string position;
+        string phoneNumber;
     }
 
-    Home private home;
-    Owner private owner;
-    Request private request;
-    Employee private employee;
+    mapping(address => Employee) private emplyees;
+    mapping(address => Owner) private owners;
+    mapping(address => Request) private requests;
+    mapping(string => Home) private homes;
+    mapping(string => Ownership[]) private ownerships;
 
-    string private message;
-
-    function Test1(string memory Message) public
+    function AddHome(string memory _adr, uint _area, uint _cost) public
     {
-        message = Message;
+        Home memory h;
+        h.homeAddress = _adr;
+        h.area = _area;
+        h.cost = _cost;
+        homes[_adr] = h;
     }
 
-    function SetMessage(string memory newMessage) public
+    function GetHome(string memory adr) public returns(uint _area, uint _cost)
     {
-        message = newMessage;
-    }
-
-    function GetMessage() public returns(string memory)
-    {
-        return message;
+        return (homes[adr].area, homes[adr].cost);
     }
 }
