@@ -34,25 +34,17 @@ contract Test
         int phone_numberEmployee;
     }
 
-    Home private home;
-    Owner private owner;
-    Request private request;
-    Employee private employee;
-
-    string private message;
-
-    function Test1(string memory Message) public 
+    function AddHome(string memory _adr, uint _area, uint _cost) public
     {
-        message = Message;
+        Home memory h;
+        h.homeAddress = _adr;
+        h.area = _area;
+        h.cost = _cost;
+        homes[_adr] = h;
     }
-
-    function SetMessage(string memory newMessage) public
+    
+    function GetHome(string memory adr) public returns(uint _area, uint _cost)
     {
-        message = newMessage;
-    }
-
-    function GetMessage() public returns (string memory)
-    {
-        return message;
+        return (homes[adr].area, homes[adr].cost);
     }
 }
