@@ -3,7 +3,7 @@ pragma solidity >=0.4.22 <0.6.0;
 contract Test {
     enum RequestType {NewHome, EditHome}
 
-    mapping(address => Employee) private employees;
+    mapping(string => Employee) private employees;
     mapping(address => Owner) private owners;
     mapping(address => Request) private requests;
     mapping(string => Home) private homes;
@@ -58,5 +58,24 @@ contract Test {
         returns (uint256 area, uint256 cost)
     {
         return (homes[adr].area, homes[adr].cost);
+    }
+
+    function AddEmployee(
+        string memory name,
+        string memory position,
+        string memory phoneNumber
+    ) public {
+        Employee memory e;
+        e.name = name;
+        e.position = position;
+        e.phoneNumber = phoneNumber;
+        employees[name] = e;
+    }
+
+    function GetEmployee(string memory name)
+        public
+        returns (string memory position, string memory phoneNumber)
+    {
+        return (employees[name].position, employees[name].phoneNumber);
     }
 }
