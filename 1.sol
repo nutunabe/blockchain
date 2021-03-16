@@ -1,13 +1,45 @@
 pragma solidity >=0.4.22 <0.6.0;
 
-contract Test {
+contract Owned {
+    address private owner;
+    
+    constructor() public {
+        owner = msg.sender;
+    }
+    
+    modifier onlyOwner {
+        require(
+            msg.sender == owner,
+            'Only owner can run this function!'
+        );
+        _;
+    }
+    
+    function ChangeOwner(address newOwner) public onlyOwner {
+        owner = newOwner;
+    }
+    
+    function GetOwner() public returns (address){
+        return owner;
+    }
+}
+
+contract ROSReestr is Owned {
     enum RequestType {NewHome, EditHome}
 
-    mapping(string => Employee) private employees;
+    mapping(address => Employee) private employees;
     mapping(address => Owner) private owners;
     mapping(address => Request) private requests;
     mapping(string => Home) private homes;
     mapping(string => Ownership[]) private ownerships;
+    
+    modifier onlyEmployee {
+        require(
+            employees[msg.sender].isSet,
+            'Only Employee can run this function!'
+        );
+        _;
+    }
 
     struct Ownership {
         string homeAddress;
@@ -39,6 +71,7 @@ contract Test {
         string name;
         string position;
         string phoneNumber;
+        bool isSet;
     }
 
     function AddHome(
@@ -61,21 +94,34 @@ contract Test {
     }
 
     function AddEmployee(
+        address empl,
         string memory name,
         string memory position,
         string memory phoneNumber
-    ) public {
+    ) public onlyOwner {
         Employee memory e;
         e.name = name;
         e.position = position;
         e.phoneNumber = phoneNumber;
-        employees[name] = e;
+        e.isSet = true;
+        employees[empl] = e;
     }
 
-    function GetEmployee(string memory name)
-        public
-        returns (string memory position, string memory phoneNumber)
+    function GetEmployee(address empl)
+        public onlyOwner
+        returns (string memory name, string memory position, string memory phoneNumber)
     {
-        return (employees[name].position, employees[name].phoneNumber);
+        return (employees[empl].name, employees[empl].position, employees[empl].phoneNumber);
+    }
+    
+    function EditEmployee(
+        address empl, 
+        string memory name, 
+        string memory position, 
+        string memory phoneNumber
+        ) public onlyOwner {
+        employees[empl].name = name;
+        employees[empl].position = position;
+        employees[empl].phoneNumber = phoneNumber;
     }
 }
