@@ -1,4 +1,4 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <=0.8.2;
 
 contract Owned {
     address private owner;
@@ -29,9 +29,11 @@ contract ROSReestr is Owned {
 
     mapping(address => Employee) private employees;
     mapping(address => Owner) private owners;
-    mapping(address => Request) private requests;
+    mapping(uint => Request) private requests;
     mapping(string => Home) private homes;
     mapping(string => Ownership[]) private ownerships;
+    
+    uint reqCount;
     
     modifier onlyEmployee {
         require(
@@ -62,8 +64,12 @@ contract ROSReestr is Owned {
     }
 
     struct Request {
+        uint id;
         RequestType requestType;
-        Home home;
+        // Home home;
+        string homeAddress;
+        uint256 homeArea;
+        uint256 homeCost;
         uint256 result;
     }
 
@@ -78,7 +84,7 @@ contract ROSReestr is Owned {
         string memory adr,
         uint256 area,
         uint256 cost
-    ) public {
+    ) public onlyEmployee {
         Home memory h;
         h.homeAddress = adr;
         h.area = area;
@@ -87,7 +93,7 @@ contract ROSReestr is Owned {
     }
 
     function GetHome(string memory adr)
-        public
+        public onlyEmployee
         returns (uint256 area, uint256 cost)
     {
         return (homes[adr].area, homes[adr].cost);
@@ -124,4 +130,61 @@ contract ROSReestr is Owned {
         employees[empl].position = position;
         employees[empl].phoneNumber = phoneNumber;
     }
+    
+    function DeleteEmployee(address empl)
+        public onlyOwner
+    {
+        delete employees[empl];
+    }
+    
+    function AddHomeRequest(
+        string memory homeAddress,
+        uint256 homeArea,
+        uint256 homeCost
+    ) public {
+        Request memory r;
+        r.id = reqCount;
+        r.requestType = RequestType.NewHome;
+        r.homeAddress = homeAddress;
+        r.homeArea = homeArea;
+        r.homeCost = homeCost;
+        // r.home = homes[homeAddress];
+        requests[reqCount] = r;
+        reqCount++;
+    }
+    
+    function GetRequestsList()
+        public onlyEmployee
+        returns (Request[] memory request)
+    {
+        request = new Request[](reqCount);
+        
+        for (uint _i = 0; _i < reqCount; _i++){
+            request[_i] = requests[_i];
+        }
+        
+        return request;
+    }
+    
+    // function GetRequestsList()
+    //     public onlyEmployee
+    //     returns (string[] memory reqType, string[] memory homeAddress, uint256[] memory homeArea, uint256[] memory homeCost)
+    // {
+    //     reqType = new string[](reqCount);
+    //     homeAddress = new string[](reqCount);
+    //     homeArea = new uint256[](reqCount);
+    //     homeCost = new uint256[](reqCount);
+        
+    //     for (uint _i = 0; _i < reqCount; _i++){
+    //         reqType[_i] = requests[_i].requestType == RequestType.NewHome ? 'NewHome' : 'EditHome';
+    //         homeAddress[_i] = requests[_i].homeAddress;
+    //         homeArea[_i] = requests[_i].homeArea;
+    //         homeCost[_i] = requests[_i].homeCost;
+    //         // homeAddress[_i] = requests[_i].home.homeAddress;
+    //         // homeArea[_i] = requests[_i].home.area;
+    //         // homeCost[_i] = requests[_i].home.cost;
+    //     }
+        
+    //     return (reqType, homeAddress, homeArea, homeCost);
+    // }
 }
