@@ -125,16 +125,21 @@ contract ROSReestr is Owned {
         string memory name, 
         string memory position, 
         string memory phoneNumber
-        ) public onlyOwner {
+    ) public onlyOwner {
         employees[empl].name = name;
         employees[empl].position = position;
         employees[empl].phoneNumber = phoneNumber;
     }
     
     function DeleteEmployee(address empl)
-        public onlyOwner
+        public onlyOwner 
+        returns (bool)
     {
-        delete employees[empl];
+        if (employees[empl].isSet){
+            delete employees[empl];
+            return true;
+        }
+        return false;
     }
     
     function AddHomeRequest(
@@ -188,3 +193,4 @@ contract ROSReestr is Owned {
     //     return (reqType, homeAddress, homeArea, homeCost);
     // }
 }
+
