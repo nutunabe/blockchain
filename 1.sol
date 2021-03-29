@@ -1,7 +1,8 @@
 pragma solidity >=0.4.22 <=0.8.2;
+pragma experimental ABIEncoderV2;
 
 contract Owned {
-    address private owner;
+    address payable private owner;
     
     constructor() public {
         owner = msg.sender;
@@ -15,7 +16,7 @@ contract Owned {
         _;
     }
     
-    function ChangeOwner(address newOwner) public onlyOwner {
+    function ChangeOwner(address payable newOwner) public onlyOwner {
         owner = newOwner;
     }
     
@@ -25,16 +26,19 @@ contract Owned {
 }
 
 contract ROSReestr is Owned {
+    // ================= variables =================
     enum RequestType {NewHome, EditHome}
+    address[] requestInitiator;
+    uint private reqCount;
 
+    // ================= mappings ==================
     mapping(address => Employee) private employees;
     mapping(address => Owner) private owners;
-    mapping(uint => Request) private requests;
+    mapping(address => Request) private requests;
     mapping(string => Home) private homes;
     mapping(string => Ownership[]) private ownerships;
     
-    uint reqCount;
-    
+    // ================= modifiers =================
     modifier onlyEmployee {
         require(
             employees[msg.sender].isSet,
@@ -42,7 +46,16 @@ contract ROSReestr is Owned {
         );
         _;
     }
+    
+    modifier costs(uint value){
+        require(
+            msg.value >= value,
+            'Not enough funds!!'
+        );
+        _;
+    }
 
+    // ================= structs ===================
     struct Ownership {
         string homeAddress;
         address owner;
@@ -64,13 +77,13 @@ contract ROSReestr is Owned {
     }
 
     struct Request {
-        uint id;
         RequestType requestType;
-        // Home home;
         string homeAddress;
         uint256 homeArea;
         uint256 homeCost;
+        address adr;
         uint256 result;
+        bool isProcessed;
     }
 
     struct Employee {
@@ -80,6 +93,7 @@ contract ROSReestr is Owned {
         bool isSet;
     }
 
+    // ================= methods ===================
     function AddHome(
         string memory adr,
         uint256 area,
@@ -142,20 +156,23 @@ contract ROSReestr is Owned {
         return false;
     }
     
-    function AddHomeRequest(
+    function AddNewHomeRequest(
         string memory homeAddress,
         uint256 homeArea,
         uint256 homeCost
-    ) public {
+    ) public costs(1e12) payable returns (bool){
         Request memory r;
-        r.id = reqCount;
         r.requestType = RequestType.NewHome;
         r.homeAddress = homeAddress;
         r.homeArea = homeArea;
         r.homeCost = homeCost;
-        // r.home = homes[homeAddress];
-        requests[reqCount] = r;
-        reqCount++;
+        r.result = 0;
+        r.adr = address(0);
+        r.isProcessed = false;
+        requests[msg.sender] = r;
+        requestInitiator.push(msg.sender);
+        reqCount += msg.value;
+        return true;
     }
     
     function GetRequestsList()
@@ -165,7 +182,7 @@ contract ROSReestr is Owned {
         request = new Request[](reqCount);
         
         for (uint _i = 0; _i < reqCount; _i++){
-            request[_i] = requests[_i];
+            request[_i] = requests[requestInitiator[_i]];
         }
         
         return request;
