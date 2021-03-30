@@ -5,7 +5,7 @@ contract Owned {
     address payable private owner;
     
     constructor() public {
-        owner = msg.sender;
+        owner = payable(msg.sender);
     }
     
     modifier onlyOwner {
@@ -27,9 +27,16 @@ contract Owned {
 
 contract ROSReestr is Owned {
     // ================= variables =================
-    enum RequestType {NewHome, EditHome}
+    enum RequestType { NewHome, EditHome }
+    enum OwnerOp { NewOwner, ChangeOwner, AddOwner }
     address[] requestInitiator;
+    string[] homeInitiator;
     uint private reqCount;
+    uint private transactCost = 1e12;
+    
+    constructor() public {
+        transactCost = 1e12;
+    }
 
     // ================= mappings ==================
     mapping(address => Employee) private employees;
@@ -82,8 +89,8 @@ contract ROSReestr is Owned {
         uint256 homeArea;
         uint256 homeCost;
         address adr;
-        uint256 result;
-        bool isProcessed;
+        // uint256 result;
+        // bool isProcessed;
     }
 
     struct Employee {
@@ -104,6 +111,7 @@ contract ROSReestr is Owned {
         h.area = area;
         h.cost = cost;
         homes[adr] = h;
+        homeInitiator.push(adr);
     }
 
     function GetHome(string memory adr)
@@ -111,6 +119,17 @@ contract ROSReestr is Owned {
         returns (uint256 area, uint256 cost)
     {
         return (homes[adr].area, homes[adr].cost);
+    }
+    
+    function GetHomeList() public 
+        returns (Home[] memory homesList) {
+            homesList = new Home[](homeInitiator.length);
+            
+            for(uint _i = 0; _i < homeInitiator.length; _i++){
+                homesList[_i] = homes[homeInitiator[_i]];
+            }
+            
+        return homesList;
     }
 
     function AddEmployee(
@@ -160,18 +179,23 @@ contract ROSReestr is Owned {
         string memory homeAddress,
         uint256 homeArea,
         uint256 homeCost
-    ) public costs(1e12) payable returns (bool){
+    ) public costs(transactCost) payable returns (bool){
         Request memory r;
         r.requestType = RequestType.NewHome;
         r.homeAddress = homeAddress;
         r.homeArea = homeArea;
         r.homeCost = homeCost;
-        r.result = 0;
+        //r.result = 0;
         r.adr = address(0);
-        r.isProcessed = false;
+        //r.isProcessed = false;
         requests[msg.sender] = r;
         requestInitiator.push(msg.sender);
         reqCount += msg.value;
+        return true;
+    }
+    
+    function AddOwnerRequest() public returns (bool) {
+        // . . .
         return true;
     }
     
@@ -186,6 +210,25 @@ contract ROSReestr is Owned {
         }
         
         return request;
+    }
+    
+    function ProcessRequest(uint id) 
+        public onlyEmployee
+        returns (bool) {
+            if (requests[requestInitiator[id]].requestType == RequestType.NewHome) {
+                // . . .
+                return true;
+            } 
+            if (requests[requestInitiator[id]].requestType == RequestType.EditHome){
+                // . . .
+                return true;
+            }
+        return false;
+    }
+    
+    function GetPrice() public 
+        returns (uint price){
+        return transactCost;
     }
     
     // function GetRequestsList()
