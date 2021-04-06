@@ -30,6 +30,7 @@ contract ROSReestr is Owned {
     enum RequestType { NewHome, EditHome }
     enum OwnerOp { NewOwner, ChangeOwner, AddOwner }
     address[] requestInitiator;
+    address[] ownerInitiator;
     string[] homeInitiator;
     uint private reqCount;
     uint private transactCost = 1e12;
@@ -131,6 +132,22 @@ contract ROSReestr is Owned {
             
         return homesList;
     }
+    
+    // function AddOwnership(uint count, address owner, uint256 p) public {
+    //     Ownership[] o = new Ownership[](count);
+        
+    // }
+    
+    function GetOwnerList() public
+    returns (Owner[] memory ownersList){
+        ownersList = new Owner[](ownerInitiator.length);
+        
+        for(uint _i = 0; _i < ownerInitiator.length; _i++){
+            ownersList[_i] = owners[ownerInitiator[_i]];
+        }
+        
+        return ownersList;
+    }
 
     function AddEmployee(
         address empl,
@@ -196,10 +213,11 @@ contract ROSReestr is Owned {
     
     function AddOwnerRequest() public returns (bool) {
         // . . .
+        ownerInitiator.push(msg.sender);
         return true;
     }
     
-    function GetRequestsList()
+    function GetRequestList()
         public onlyEmployee
         returns (Request[] memory request)
     {
