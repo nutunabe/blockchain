@@ -81,16 +81,16 @@ contract ROSReestr is Owned {
 
     struct Home {
         string homeAddress;
-        uint256 area;
-        uint256 cost;
+        uint area;
+        uint32 cost;
         bool isSet;
     }
 
     struct Request {
         RequestType requestType;
         string homeAddress;
-        uint256 homeArea;
-        uint256 homeCost;
+        uint homeArea;
+        uint32 homeCost;
         address adr;
         // uint256 result;
         // bool isProcessed;
@@ -105,11 +105,11 @@ contract ROSReestr is Owned {
 
     // ================= methods ===================
     
-    // home
+    // === home ===
     function AddHome(
         string memory adr,
-        uint256 area,
-        uint256 cost
+        uint area,
+        uint32 cost
     ) public onlyEmployee 
     {
         Home memory h;
@@ -119,10 +119,10 @@ contract ROSReestr is Owned {
         homes[adr] = h;
         homeInitiator.push(adr);
     }
-
-    function GetHome(string memory adr) public onlyEmployee returns (uint256 area, uint256 cost)
+    
+    function GetHome(string memory adr) public onlyEmployee returns (Home memory)
     {
-        return (homes[adr].area, homes[adr].cost);
+        return homes[adr];
     }
     
     function GetHomeList() public returns (Home[] memory homesList) 
@@ -136,7 +136,7 @@ contract ROSReestr is Owned {
         return homesList;
     }
     
-    // owner
+    // === owner ===
     // function AddOwnership(uint count, address owner, uint256 p) public {
     //     Ownership[] o = new Ownership[](count);
         
@@ -153,7 +153,7 @@ contract ROSReestr is Owned {
         return ownersList;
     }
 
-    // employee
+    // === employee ===
     function AddEmployee(
         address empl,
         string memory name,
@@ -196,11 +196,11 @@ contract ROSReestr is Owned {
         return false;
     }
     
-    // request
+    // === request ===
     function AddNewHomeRequest(
         string memory homeAddress,
-        uint256 homeArea,
-        uint256 homeCost
+        uint homeArea,
+        uint32 homeCost
     ) public costs(transactCost) payable returns (bool)
     {
         Request memory r;
@@ -211,6 +211,24 @@ contract ROSReestr is Owned {
         //r.result = 0;
         r.adr = address(0);
         //r.isProcessed = false;
+        requests[msg.sender] = r;
+        requestInitiator.push(msg.sender);
+        reqCount += msg.value;
+        return true;
+    }
+    
+    function AddEditHomeRequest(
+        string memory homeAddress,
+        uint homeArea,
+        uint32 homeCost
+        ) public costs(transactCost) payable returns (bool)
+    {
+        Request memory r;
+        r.requestType = RequestType.EditHome;
+        r.homeAddress = homeAddress;
+        r.homeArea = homeArea;
+        r.homeCost = homeCost;
+        r.adr = address(0);
         requests[msg.sender] = r;
         requestInitiator.push(msg.sender);
         reqCount += msg.value;
@@ -257,7 +275,8 @@ contract ROSReestr is Owned {
         } 
         if (r.requestType == RequestType.EditHome){
             // edit home
-            // . . .
+            homes[r.homeAddress].area = r.homeArea;
+            homes[r.homeAddress].cost = r.homeCost;
             // change ownership
             // . . .
         }
