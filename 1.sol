@@ -34,10 +34,10 @@ contract ROSReestr is Owned {
     address[] ownerInitiator;
     string[] homeInitiator;
     uint private reqCount;
-    uint private transactCost = 1e12;
+    uint private transactCost;
     
     constructor() public {
-        transactCost = 1e12;
+        transactCost = 100 wei;
     }
 
     // ================= mappings ==================
@@ -159,7 +159,7 @@ contract ROSReestr is Owned {
         string memory name,
         string memory position,
         string memory phoneNumber
-    ) public onlyOwner 
+    ) public onlyOwner costs(transactCost) payable
     {
         Employee memory e;
         e.name = name;
@@ -180,14 +180,14 @@ contract ROSReestr is Owned {
         string memory name, 
         string memory position, 
         string memory phoneNumber
-    ) public onlyOwner 
+    ) public onlyOwner
     {
         employees[empl].name = name;
         employees[empl].position = position;
         employees[empl].phoneNumber = phoneNumber;
     }
     
-    function DeleteEmployee(address empl) public onlyOwner returns (bool)
+    function DeleteEmployee(address empl) public onlyOwner costs(transactCost) payable returns (bool)
     {
         if (employees[empl].isSet){
             delete employees[empl];
@@ -235,7 +235,7 @@ contract ROSReestr is Owned {
         return true;
     }
     
-    function AddOwnerRequest() public returns (bool) 
+    function AddOwnerRequest() public costs(transactCost) payable returns (bool) 
     {
         // . . .
         ownerInitiator.push(msg.sender);
@@ -253,7 +253,7 @@ contract ROSReestr is Owned {
         return request;
     }
     
-    function ProcessRequest(uint id) public onlyEmployee returns (uint) 
+    function ProcessRequest(uint id) public onlyEmployee costs(transactCost) payable returns (uint) 
     {
         if (id < 0 || id >= requestInitiator.length)
             return 1;
