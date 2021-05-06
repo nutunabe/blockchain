@@ -61,8 +61,10 @@ class AddEmployee(FlaskForm):
     empl_addr = StringField('Employee\'s account address:',
                             validators=[DataRequired()])
     name = StringField('Employee\'s name:', validators=[DataRequired()])
-    position = StringField('Employee\'s position:', validators=[DataRequired()])
-    phone_number = StringField('Employee\'s phone number:', validators=[DataRequired()])
+    position = StringField('Employee\'s position:',
+                           validators=[DataRequired()])
+    phone_number = StringField(
+        'Employee\'s phone number:', validators=[DataRequired()])
     submit = SubmitField('Add')
 
 
@@ -76,8 +78,10 @@ class EditEmployee(FlaskForm):
     empl_addr = StringField('Employee\'s account address:',
                             validators=[DataRequired()])
     name = StringField('Employee\'s name:', validators=[DataRequired()])
-    position = StringField('Employee\'s position:', validators=[DataRequired()])
-    phone_number = StringField('Employee\'s phone number:', validators=[DataRequired()])
+    position = StringField('Employee\'s position:',
+                           validators=[DataRequired()])
+    phone_number = StringField(
+        'Employee\'s phone number:', validators=[DataRequired()])
     submit = SubmitField('Edit')
 
 

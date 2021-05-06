@@ -37,7 +37,7 @@ contract ROSReestr is Owned {
     uint private transactCost;
     
     constructor() public {
-        transactCost = 100 wei;
+        transactCost = 100 gwei;
     }
 
     // ================= mappings ==================
@@ -110,7 +110,7 @@ contract ROSReestr is Owned {
         string memory adr,
         uint area,
         uint32 cost
-    ) public onlyEmployee 
+    ) public  
     {
         Home memory h;
         h.homeAddress = adr;
@@ -120,7 +120,7 @@ contract ROSReestr is Owned {
         homeInitiator.push(adr);
     }
     
-    function GetHome(string memory adr) public onlyEmployee returns (Home memory)
+    function GetHome(string memory adr) public returns (Home memory)
     {
         return homes[adr];
     }
@@ -159,7 +159,7 @@ contract ROSReestr is Owned {
         string memory name,
         string memory position,
         string memory phoneNumber
-    ) public onlyOwner costs(transactCost) payable
+    ) public onlyOwner 
     {
         Employee memory e;
         e.name = name;
@@ -180,14 +180,14 @@ contract ROSReestr is Owned {
         string memory name, 
         string memory position, 
         string memory phoneNumber
-    ) public onlyOwner costs(transactCost) payable
+    ) public onlyOwner
     {
         employees[empl].name = name;
         employees[empl].position = position;
         employees[empl].phoneNumber = phoneNumber;
     }
     
-    function DeleteEmployee(address empl) public onlyOwner costs(transactCost) payable returns (bool)
+    function DeleteEmployee(address empl) public onlyOwner returns (bool)
     {
         if (employees[empl].isSet){
             delete employees[empl];
@@ -290,4 +290,3 @@ contract ROSReestr is Owned {
         return transactCost;
     }
 }
-

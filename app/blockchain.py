@@ -27,7 +27,6 @@ class Blockchain:
         signed_tr = self.w3.eth.account.signTransaction(
             transaction, private_key=self.private_key)
         self.w3.eth.sendRawTransaction(signed_tr.rawTransaction)
-        # self.nonce = self.nonce+1
 
     def getOwner(self):
         return self.contract.functions.GetOwner().call()
@@ -37,7 +36,7 @@ class Blockchain:
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
-            'nonce': self.nonce,
+            'nonce': self.nonce
         })
         self.sendTransaction(transaction)
 
@@ -46,7 +45,7 @@ class Blockchain:
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
-            'nonce': self.nonce,
+            'nonce': self.nonce
         })
         self.sendTransaction(transaction)
 
@@ -58,7 +57,7 @@ class Blockchain:
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
-            'nonce': self.nonce,
+            'nonce': self.nonce
         })
         self.sendTransaction(transaction)
 
@@ -67,7 +66,7 @@ class Blockchain:
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
-            'nonce': self.nonce,
+            'nonce': self.nonce
         })
         self.sendTransaction(transaction)
 
@@ -76,6 +75,6 @@ class Blockchain:
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
-            'nonce': self.nonce,
+            'nonce': self.nonce
         })
         self.sendTransaction(transaction)

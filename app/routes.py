@@ -5,11 +5,11 @@ from app.forms import AddEmployee, GetEmployee, EditEmployee, DeleteEmployee, Ad
 from app.forms import NewHomeRequest, EditHomeRequest, AddOwnerRequest, ProcessRequest
 from app.blockchain import Blockchain
 
+
 bb = None
 
+
 # ===============   WEB APP   ===============
-
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -45,7 +45,7 @@ def auth():
         session['logged'] = '+'
         session['username'] = 'Chmoshnik'
         session['account_adr'] = '0x0D10b2c2a567CdEE28130AcefEe3Ce4B29A33E66'
-        session['contract_adr'] = '0x1B5aE046431c0Be70e6e473baa382Da712A8B3f7'
+        session['contract_adr'] = '0x2F805DB52496E2925E64B389D04849aE720f66bc'
         global bb
         bb = Blockchain('0x0D10b2c2a567CdEE28130AcefEe3Ce4B29A33E66',
                         '0x1B5aE046431c0Be70e6e473baa382Da712A8B3f7')
@@ -205,7 +205,7 @@ def edit_employee():
 def delete_employee():
     form = DeleteEmployee()
     if form.validate_on_submit():
-        x = ' . . . '
+        print(bb.deleteEmployee(form.empl_addr.data))
         #  . . .
     return render_template('methods.html', mode='Delete employee', form=form)
 
