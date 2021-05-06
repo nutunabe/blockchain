@@ -180,7 +180,7 @@ contract ROSReestr is Owned {
         string memory name, 
         string memory position, 
         string memory phoneNumber
-    ) public onlyOwner
+    ) public onlyOwner costs(transactCost) payable
     {
         employees[empl].name = name;
         employees[empl].position = position;

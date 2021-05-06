@@ -3,13 +3,17 @@ from app import app
 from app.forms import AuthForm, ChangeAddrForm
 from app.forms import AddEmployee, GetEmployee, EditEmployee, DeleteEmployee, AddHome, GetHome
 from app.forms import NewHomeRequest, EditHomeRequest, AddOwnerRequest, ProcessRequest
+from app.blockchain import Blockchain
 
+bb = None
 
 # ===============   WEB APP   ===============
+
+
 @app.route('/')
 @app.route('/index')
 def index():
-    if 'username' in session:
+    if 'logged' in session:
         user = {'nickname': session.get('username')}
         info = [
             {
@@ -19,6 +23,10 @@ def index():
             {
                 'key': 'Contract address',
                 'body': session.get('contract_adr')
+            },
+            {
+                'key': 'Balance',
+                'body': bb.getBalance()
             }
         ]
         return render_template("index.html",
@@ -31,34 +39,47 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def auth():
-    if 'username' in session:
+    if 'logged' in session:
         return redirect(url_for('index'))
     else:
-        form = AuthForm()
-        if form.validate_on_submit():
-            session['username'] = form.username.data
-            session['account_adr'] = form.account_address.data
-            session['contract_adr'] = form.contract_address.data
-            return redirect(url_for('index'))
-        return render_template('auth.html',  title='Sign In', form=form)
+        session['logged'] = '+'
+        session['username'] = 'Chmoshnik'
+        session['account_adr'] = '0x0D10b2c2a567CdEE28130AcefEe3Ce4B29A33E66'
+        session['contract_adr'] = '0x1B5aE046431c0Be70e6e473baa382Da712A8B3f7'
+        global bb
+        bb = Blockchain('0x0D10b2c2a567CdEE28130AcefEe3Ce4B29A33E66',
+                        '0x1B5aE046431c0Be70e6e473baa382Da712A8B3f7')
+        return redirect(url_for('index'))
+        # form = AuthForm()
+        # if form.validate_on_submit():
+        #     session['logged'] = '+'
+        #     session['username'] = form.username.data
+        #     session['account_adr'] = form.account_address.data
+        #     session['contract_adr'] = form.contract_address.data
+        #     global bb
+        #     bb = Blockchain(form.account_address.data,
+        #                     form.contract_address.data)
+        #     return redirect(url_for('index'))
+        # return render_template('auth.html',  title='Sign In', form=form)
 
 
 @app.route('/logout')
 def session_reset():
-    session.pop('username', None)
-    session.pop('account_adr', None)
-    session.pop('contract_adr', None)
+    session.clear()
     return redirect(url_for('auth'))
 
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    if 'logged' in session:
+        return render_template('menu.html')
+    else:
+        return redirect(url_for('auth'))
 
 
 @app.route('/change_address', methods=['GET', 'POST'])
 def change_address():
-    if 'username' in session:
+    if 'logged' in session:
         form = ChangeAddrForm()
         if form.validate_on_submit():
             session.pop('contract_adr', None)
@@ -101,7 +122,7 @@ def add_owner_request():
 def get_request_list():
     x = ' . . . '
     #  . . .
-    return render_template('menu.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/requests/process', methods=['GET', 'POST'])
@@ -136,29 +157,29 @@ def get_home():
 def get_home_list():
     x = ' . . . '
     #  . . .
-    return render_template('menu.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/methods/ownership/add', methods=['GET', 'POST'])
 def add_ownership():
     x = ' . . . '
     #  . . .
-    return render_template('menu.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/methods/ownership/get', methods=['GET', 'POST'])
 def get_ownership():
     x = ' . . . '
     #  . . .
-    return render_template('menu.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/methods/employees/add', methods=['GET', 'POST'])
 def add_employee():
     form = AddEmployee()
     if form.validate_on_submit():
-        x = ' . . . '
-        #  . . .
+        bb.addEmployee(form.empl_addr.data, form.name.data,
+                       form.position.data, form.phone_number.data)
     return render_template('methods.html', mode='Add employee', form=form)
 
 
@@ -166,7 +187,7 @@ def add_employee():
 def get_employee():
     form = GetEmployee()
     if form.validate_on_submit():
-        x = ' . . . '
+        print(bb.getEmployee(form.empl_addr.data))
         #  . . .
     return render_template('methods.html', mode='Get employee', form=form)
 
@@ -193,4 +214,4 @@ def delete_employee():
 def get_price():
     x = ' . . . '
     #  . . .
-    return render_template('menu.html')
+    return redirect(url_for('index'))
