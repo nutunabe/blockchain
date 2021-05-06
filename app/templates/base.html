@@ -17,6 +17,9 @@
     <div class="wrapper">
         <header>
             <div><p id="title">Blockchain</p></div>
+            {% if addr %}
+            <div><a target="_blank" id="hhref" href="https://ropsten.etherscan.io/address/{{addr}}">Etherscan</a></div>
+            {% endif %}
             <div><a id="hhref" href="/index">Home</a></div>
             <div><a id="hhref" href="/menu">Menu</a></div>
             <div><a id="hhref" href="/logout">Logout</a></div>
