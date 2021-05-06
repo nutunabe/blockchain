@@ -5,7 +5,7 @@
     {{ form.hidden_tag() }}
     <p>
         {{ form.contract_address.label }}<br>
-        {{ form.contract_address(size=50) }}<br>
+        {{ form.contract_address(size=50, style="margin-bottom: 10px; margin-top: 2px; padding: 2px;") }}<br>
         {% for error in form.contract_address.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}

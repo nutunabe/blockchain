@@ -21,6 +21,14 @@
   margin-left: 15px;
 }
 
+#title{
+  color: #00ffe5;
+  margin-left: 10px;
+  font-family: monospace;
+  font-size: 5mm;
+  font-weight: bold;
+}
+
 html,
 body {
   color: #fffbdf;
@@ -35,14 +43,14 @@ header {
   display: flex;
   flex-direction: row;
   padding: 10px;
-  background-color: #4b5d67;
+  background-color: #25635c;
   border-bottom: 0;
 }
 
 main {
   padding: 10px;
   flex: 1 0 auto;
-  background-color: #1b1a17;
+  background-color: #282828;
 }
 
 form {
@@ -61,4 +69,21 @@ footer {
 a {
   text-decoration: none;
   color: #fff;
+}
+
+a:hover{
+  color: rgb(177, 208, 218);
+}
+
+#submit {
+  border-radius: 2px;
+  border: 2px;
+  background-color: mediumaquamarine;
+  padding: 10px;
+  margin-top: 5px;
+  min-width: 65px;
+}
+
+#submit:hover {
+  background-color: rgb(98, 192, 161);
 }

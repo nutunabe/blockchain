@@ -7,7 +7,12 @@
     {% if field.id != 'submit' %}
     {{ field.label }} <br>
     {% endif %}
-    {{ field(size=50, style="margin-bottom: 10px; padding: 2px;") }}
+    {% if field.id != 'submit' %}
+    {{ field(size=50, style="margin-bottom: 10px; margin-top: 2px; padding: 2px;") }}
+    {% endif %}
+    {% if field.id == 'submit' %}
+    {{ field }}
+    {% endif %}
     {% for error in field.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}

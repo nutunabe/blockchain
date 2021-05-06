@@ -51,6 +51,11 @@ def session_reset():
     return redirect(url_for('auth'))
 
 
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
+
+
 @app.route('/change_address', methods=['GET', 'POST'])
 def change_address():
     if 'username' in session:
@@ -96,6 +101,7 @@ def add_owner_request():
 def get_request_list():
     x = ' . . . '
     #  . . .
+    return render_template('menu.html')
 
 
 @app.route('/requests/process', methods=['GET', 'POST'])
@@ -130,16 +136,21 @@ def get_home():
 def get_home_list():
     x = ' . . . '
     #  . . .
+    return render_template('menu.html')
 
 
-# @app.route('/methods/ownership/add', methods=['GET', 'POST'])
-# def add_ownership():
-#     x = ' . . . '
+@app.route('/methods/ownership/add', methods=['GET', 'POST'])
+def add_ownership():
+    x = ' . . . '
+    #  . . .
+    return render_template('menu.html')
 
 
-# @app.route('/methods/ownership/get', methods=['GET', 'POST'])
-# def get_ownership():
-#     x = ' . . . '
+@app.route('/methods/ownership/get', methods=['GET', 'POST'])
+def get_ownership():
+    x = ' . . . '
+    #  . . .
+    return render_template('menu.html')
 
 
 @app.route('/methods/employees/add', methods=['GET', 'POST'])
@@ -182,3 +193,4 @@ def delete_employee():
 def get_price():
     x = ' . . . '
     #  . . .
+    return render_template('menu.html')
