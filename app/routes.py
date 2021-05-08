@@ -29,7 +29,7 @@ def index():
             },
             {
                 'key': 'Balance',
-                'value': bb.getBalance()
+                'value': str(bb.getBalance())+' ETH'
             },
             {
                 'key': 'Transaction cost',
@@ -52,7 +52,7 @@ def auth():
         session['logged'] = '+'
         global bb
         bb = Blockchain('0x0D10b2c2a567CdEE28130AcefEe3Ce4B29A33E66',
-                        '0xc133C2AD4255d82bcF8E5D538cB4d10de691AEEC')
+                        '0x76728e8A38F0A85C1ca6F26CA811caC859cf3176')
         return redirect(url_for('index'))
         # form = AuthForm()
         # if form.validate_on_submit():
@@ -95,20 +95,22 @@ def change_address():
 # ===============   REQUESTS   ==============
 @app.route('/requests/new_home', methods=['GET', 'POST'])
 def new_home_request():
+    tx_hash = None
     form = NewHomeRequest()
     if form.validate_on_submit():
-        x = ' . . . '
-        #  . . .
-    return render_template('methods.html', addr=bb.account_address, mode='\"New home\" request', form=form)
+        tx_hash = bb.addNewHomeRequest(form.home_address.data, form.home_area.data,
+                                       form.home_cost.data)
+    return render_template('methods.html', addr=bb.account_address, mode='\"New home\" request', form=form, tx_hash=tx_hash)
 
 
 @app.route('/requests/edit_home', methods=['GET', 'POST'])
 def edit_home_request():
+    tx_hash = None
     form = EditHomeRequest()
     if form.validate_on_submit():
-        x = ' . . . '
-        #  . . .
-    return render_template('methods.html', addr=bb.account_address, mode='\"Edit home\" request', form=form)
+        tx_hash = bb.addEditHomeRequest(form.home_address.data, form.home_area.data,
+                                        form.home_cost.data)
+    return render_template('methods.html', addr=bb.account_address, mode='\"Edit home\" request', form=form, tx_hash=tx_hash)
 
 
 @app.route('/requests/add_owner', methods=['GET', 'POST'])
@@ -123,10 +125,9 @@ def add_owner_request():
 @app.route('/requests/get_list', methods=['GET', 'POST'])
 def get_request_list():
     data = None
-    x = ' . . . '
-    #  . . .
-    return redirect(url_for('index'))
-
+    res=bb.getRequestList()
+    print(res)
+    return render_template('methods.html', addr=bb.account_address, mode='Requests list')
 
 @app.route('/requests/process', methods=['GET', 'POST'])
 def process_request():
@@ -192,7 +193,6 @@ def get_home_list():
             }
         ]
         data.append(row)
-    #  . . .
     return render_template('methods.html', addr=bb.account_address, table=data, mode='Homes list')
 
 
@@ -216,9 +216,9 @@ def add_employee():
     tx_hash = None
     form = AddEmployee()
     if form.validate_on_submit():
-        bb.addEmployee(form.empl_addr.data, form.name.data,
-                       form.position.data, form.phone_number.data)
-    return render_template('methods.html', addr=bb.account_address, mode='Add employee', form=form)
+        tx_hash = bb.addEmployee(form.empl_addr.data, form.name.data,
+                                 form.position.data, form.phone_number.data)
+    return render_template('methods.html', addr=bb.account_address, mode='Add employee', form=form, tx_hash=tx_hash)
 
 
 @app.route('/methods/employees/get', methods=['GET', 'POST'])
@@ -249,9 +249,9 @@ def edit_employee():
     tx_hash = None
     form = EditEmployee()
     if form.validate_on_submit():
-        x = ' . . . '
-        #  . . .
-    return render_template('methods.html', addr=bb.account_address, mode='Edit employee', form=form)
+        tx_hash = bb.editEmployee(form.empl_addr.data, form.name.data,
+                                  form.position.data, form.phone_number.data)
+    return render_template('methods.html', addr=bb.account_address, mode='Edit employee', form=form, tx_hash=tx_hash)
 
 
 @app.route('/methods/employees/delete', methods=['GET', 'POST'])
@@ -259,6 +259,5 @@ def delete_employee():
     tx_hash = None
     form = DeleteEmployee()
     if form.validate_on_submit():
-        print(bb.deleteEmployee(form.empl_addr.data))
-        #  . . .
-    return render_template('methods.html', addr=bb.account_address, mode='Delete employee', form=form)
+        tx_hash = bb.deleteEmployee(form.empl_addr.data)
+    return render_template('methods.html', addr=bb.account_address, mode='Delete employee', form=form, tx_hash=tx_hash)

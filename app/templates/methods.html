@@ -25,12 +25,12 @@
 {% endif %}
 {% if tx_hash %}
 <div style="margin-top: 15px;">
-    <a target="_blank" id="hhref" href="https://ropsten.etherscan.io/tx/{{tx_hash}}">Transaction details</a>
+    <a target="_blank" id="hhref" style="text-decoration: underline;" href="https://ropsten.etherscan.io/tx/{{tx_hash}}">https://ropsten.etherscan.io/tx/{{tx_hash}}</a>
 </div>
 {% endif %}
 {% if result %}
 {% for i in result %}
-<div class="info">
+<div class="info" style="margin-top: 15px;">
     <p>{{i.key}}:&nbsp;<b style="color: #fff">{{i.value}}</b></p>
 </div>
 {% endfor %}

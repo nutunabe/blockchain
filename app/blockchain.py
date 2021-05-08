@@ -93,3 +93,39 @@ class Blockchain:
 
     def getPrice(self):
         return self.contract.functions.GetPrice().call()
+
+    def addNewHomeRequest(self, homeAddr, area, cost):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
+        transaction = self.contract.functions.AddNewHomeRequest(homeAddr, to_int(text=area), to_int(text=cost)).buildTransaction({
+            'gas': 3000000,
+            'gasPrice': self.w3.toWei('1', 'gwei'),
+            'from': self.account_address,
+            'nonce': self.nonce,
+            'value': self.w3.toWei('1', 'gwei')
+        })
+        return self.sendTransaction(transaction)
+
+    def addEditHomeRequest(self, homeAddr, area, cost):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
+        transaction = self.contract.functions.AddEditHomeRequest(homeAddr, to_int(text=area), to_int(text=cost)).buildTransaction({
+            'gas': 3000000,
+            'gasPrice': self.w3.toWei('1', 'gwei'),
+            'from': self.account_address,
+            'nonce': self.nonce,
+            'value': self.w3.toWei('1', 'gwei')
+        })
+        return self.sendTransaction(transaction)
+
+    def getRequestList(self):
+        return self.contract.functions.GetRequestList().call()
+
+    def processRequest(self, reqId):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
+        transaction = self.contract.functions.ProcessRequest(to_int(text=reqId)).buildTransaction({
+            'gas': 3000000,
+            'gasPrice': self.w3.toWei('1', 'gwei'),
+            'from': self.account_address,
+            'nonce': self.nonce,
+            'value': self.w3.toWei('1', 'gwei')
+        })
+        return self.sendTransaction(transaction)
