@@ -84,7 +84,6 @@ def change_address():
         form = ChangeAddrForm()
         if form.validate_on_submit():
             acc_addr = bb.account_address
-            global bb
             bb = Blockchain(acc_addr,
                             form.contract_address.data)
             return redirect(url_for('index'))
