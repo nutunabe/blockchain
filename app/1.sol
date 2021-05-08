@@ -110,12 +110,13 @@ contract ROSReestr is Owned {
         string memory adr,
         uint area,
         uint32 cost
-    ) public  
+    ) public 
     {
         Home memory h;
         h.homeAddress = adr;
         h.area = area;
         h.cost = cost;
+        h.isSet = true;
         homes[adr] = h;
         homeInitiator.push(adr);
     }
