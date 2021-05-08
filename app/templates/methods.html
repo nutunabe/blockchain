@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+{% if mode %}
 <h1>{{ mode }}</h1>
+{% endif %}
+{% if form %}
 <form autocomplete="off" action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     {% for field in form if field.id != 'csrf_token' %}
@@ -19,4 +22,45 @@
     <br />
     {% endfor %}
 </form>
+{% endif %}
+{% if tx_hash %}
+<div style="margin-top: 15px;">
+    <a target="_blank" id="hhref" href="https://ropsten.etherscan.io/tx/{{tx_hash}}">Transaction details</a>
+</div>
+{% endif %}
+{% if result %}
+{% for i in result %}
+<div class="info">
+    <p>{{i.key}}:&nbsp;<b style="color: #fff">{{i.value}}</b></p>
+</div>
+{% endfor %}
+{% endif %}
+{% if table %}
+<!-- {% for i in table %}
+<div class="info">
+    <p>{{loop.index}}.
+        {% for j in i %}
+        {{j.key}}: <b style="color: #fff">{{j.value}};</b>
+        {% endfor %}
+    </p>
+</div>
+{% endfor %} -->
+<table border="1">
+    <tr>
+        <th>№</th>
+        {% for j in table[0] %}
+        <th>{{j.key}}</th>
+        {% endfor %}
+    </tr>
+
+    {% for i in table %}
+    <tr>
+        <td>{{loop.index}}</td>
+        {% for j in i %}
+        <td>{{j.value}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
 {% endblock %}

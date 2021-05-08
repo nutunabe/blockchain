@@ -1,4 +1,5 @@
 from web3 import Web3
+from eth_utils import to_int, to_text, to_hex
 import json
 
 
@@ -18,7 +19,6 @@ class Blockchain:
             self.abi = json.load(f)
         self.contract = self.w3.eth.contract(
             address=self.contract_address, abi=self.abi)
-        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
 
     def getBalance(self):
         return self.w3.fromWei(self.balance, 'ether')
@@ -27,54 +27,69 @@ class Blockchain:
         signed_tr = self.w3.eth.account.signTransaction(
             transaction, private_key=self.private_key)
         self.w3.eth.sendRawTransaction(signed_tr.rawTransaction)
+        return to_hex(signed_tr.hash)
 
     def getOwner(self):
         return self.contract.functions.GetOwner().call()
 
     def changeOwner(self, newOwner):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
         transaction = self.contract.functions.ChangeOwner(newOwner).buildTransaction({
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
             'nonce': self.nonce
         })
-        self.sendTransaction(transaction)
+        return self.sendTransaction(transaction)
 
     def addEmployee(self, emplAddr, name, position, phoneNumber):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
         transaction = self.contract.functions.AddEmployee(emplAddr, name, position, phoneNumber).buildTransaction({
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
             'nonce': self.nonce
         })
-        self.sendTransaction(transaction)
+        return self.sendTransaction(transaction)
 
     def getEmployee(self, emplAddr):
         return self.contract.functions.GetEmployee(emplAddr).call()
 
     def editEmployee(self, emplAddr, name, position, phoneNumber):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
         transaction = self.contract.functions.EditEmployee(emplAddr, name, position, phoneNumber).buildTransaction({
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
             'nonce': self.nonce
         })
-        self.sendTransaction(transaction)
+        return self.sendTransaction(transaction)
 
     def deleteEmployee(self, emplAddr):
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
         transaction = self.contract.functions.DeleteEmployee(emplAddr).buildTransaction({
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
             'nonce': self.nonce
         })
-        self.sendTransaction(transaction)
+        return self.sendTransaction(transaction)
 
     def addHome(self, homeAddr, area, cost):
-        transaction = self.contract.functions.AddHome(homeAddr, area, cost).buildTransaction({
+        self.nonce = self.w3.eth.getTransactionCount(self.account_address)
+        transaction = self.contract.functions.AddHome(homeAddr, to_int(text=area), to_int(text=cost)).buildTransaction({
             'gas': 3000000,
             'gasPrice': self.w3.toWei('1', 'gwei'),
             'from': self.account_address,
             'nonce': self.nonce
         })
-        self.sendTransaction(transaction)
+        return self.sendTransaction(transaction)
+
+    def getHome(self, homeAddr):
+        return self.contract.functions.GetHome(homeAddr).call()
+
+    def getHomeList(self):
+        return self.contract.functions.GetHomeList().call()
+
+    def getPrice(self):
+        return self.contract.functions.GetPrice().call()

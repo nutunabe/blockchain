@@ -1,9 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 style="margin-bottom: 10px;">Hello, {{user.nickname}}!</h1>
 {% for i in info %}
 <div class="info">
-    <p>{{i.key}}:<br><b style="color: #fff">{{i.body}}</b></p>
+    <p>{{i.key}}:<br><b style="color: #fff">{{i.value}}</b></p>
 </div>
 {% endfor %}
+<h3 style="margin-top: 15px;">Requests</h3>
+<div style="margin-top: 3px; margin-left: 5px;" class="menu">
+    <p><a href="/requests/new_home">New home request</a></p>
+    <p><a href="/requests/edit_home">Edit home request</a></p>
+    <p><a href="/requests/add_owner">Add owner request</a></p>
+    <p><a href="/requests/get_list">Get requests list</a></p>
+    <p><a href="/requests/process">Process request</a></p>
+</div>
+<h3 style="margin-top: 10px;">Methods</h3>
+<div style="margin-left: 5px;">
+    <h4 style="margin-top: 3px;">Homes</h4>
+    <div style="margin-top: 3px; margin-left: 5px;" class="menu">
+        <p><a href="/methods/homes/add">Add home</a></p>
+        <p><a href="/methods/homes/get">Get home</a></p>
+        <p><a href="/methods/homes/get_list">Get home list</a></p>
+    </div>
+    <h4 style="margin-top: 5px;">Ownerships</h4>
+    <div style="margin-top: 3px; margin-left: 5px;" class="menu">
+        <p><a href="/methods/ownership/add">Add ownership</a></p>
+        <p><a href="/methods/ownership/get">Get ownership</a></p>
+    </div>
+    <h4 style="margin-top: 5px;">Employees</h4>
+    <div style="margin-top: 3px; margin-left: 5px;" class="menu">
+        <p><a href="/methods/employees/add">Add employee</a></p>
+        <p><a href="/methods/employees/get">Get employee</a></p>
+        <p><a href="/methods/employees/edit">Edit employee</a></p>
+        <p><a href="/methods/employees/delete">Delete employee</a></p>
+    </div>
+</div>
 {% endblock %}

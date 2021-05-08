@@ -5,7 +5,6 @@ from wtforms.validators import DataRequired
 
 # ===============   WEB APP   ===============
 class AuthForm(FlaskForm):
-    username = StringField('Tell me who you are:', validators=[DataRequired()])
     account_address = StringField(
         'Account address:', validators=[DataRequired()])
     contract_address = StringField(
